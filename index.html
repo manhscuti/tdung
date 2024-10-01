@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Của Bảnh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khey-c73cfcfd-3608-459a-9442-886c5079cce1.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hleS1jNzNjZmNmZC0zNjA4LTQ1OWEtOTQ0Mi04ODZjNTA3OWNjZTEuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.iodwmeFDqu6MnLPZYUH8nw-qGBZwBRLggUrUCdAfqmU'); /* Nền chung cho trang */
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            padding: 50px;
+            color: black;
+        }
+
+        h1 {
+            color: pink;
+            font-size: 35px; /* Kích cỡ chữ chào mừng */
+            animation: rainbow 1s infinite;
+            text-shadow: 0 0 5px cyan, 0 0 10px cyan, 0 0 20px cyan;
+            margin-bottom: 80px;/* Khoảnh cách dưới chào mừng */
+        }
+
+
+        .avatar {
+            width: 150px; /* Kích thước hình ảnh avatar */
+            height: 150px;
+            border-radius: 50%; /* Làm cho hình ảnh tròn */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            margin-bottom: 0px; /* Khoảng cách dưới hình ảnh */
+        }
+
+        .platform {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid red;
+            border-radius: 10px;
+            color: cyan;
+            text-shadow: 0 0 5px blue, 0 0 10px blue; 
+            background-size: cover;
+            background-position: center;
+        }
+
+        .c {
+            margin: 15px;
+            padding: 15px;
+            border: 3px solid red ;
+            border-radius: 10px;
+            color: cyan;
+            text-shadow: 0 0 5px blue, 0 0 10px blue;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .b {
+            margin: 1px;
+            padding: 1px;
+            border: 3px solid red ;
+            border-radius: 10px;
+            color: yellow;
+            text-shadow: 0 0 5px blue, 0 0 10px blue;
+            background-size: cover;
+            background-position: center;
+        }
+        .platform a {
+            text-decoration: none;
+            color: red;
+            font-weight: bold;
+            text-shadow: 0 0 5px red, 0 0 10px red;
+        }
+
+        .platform a:hover {
+            text-shadow: 0 0 15px red;
+        }
+
+        .fb-platform {
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khgw-f837e596-9eef-4f5e-bdbb-40e9e0f95576.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hndy1mODM3ZTU5Ni05ZWVmLTRmNWUtYmRiYi00MGU5ZTBmOTU1NzYuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.cxM3Hc4CAOq6xFh-xINCqTQ-eHVVpcr5DYINg36rkL0'); /* Nền riêng cho Facebook */
+        }
+
+        .yt-platform {
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khgf-837caac1-477d-406a-b8cc-e2ba73e33e3d.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hnZi04MzdjYWFjMS00NzdkLTQwNmEtYjhjYy1lMmJhNzNlMzNlM2QuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p4Rb7sjaXukLhwO9RnAqki8noMT4zUXBQZeIv3J1EGM'); /* Nền riêng cho YouTube */
+        }
+
+        .tw-platform {
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/dfb2vup-0184eccb-42af-4bf6-afe3-43a20c84a79e.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGZiMnZ1cC0wMTg0ZWNjYi00MmFmLTRiZjYtYWZlMy00M2EyMGM4NGE3OWUuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.QD-lJBs_S_Fb8NFsWkzB5YSMoeNyI1HyOLRR7vFjOb0'); /* Nền riêng cho Twitter */
+        }
+
+        .ig-platform {
+           background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khfx-b057d5e1-b0ea-4265-92c6-5f197eb5560e.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hmeC1iMDU3ZDVlMS1iMGVhLTQyNjUtOTJjNi01ZjE5N2ViNTU2MGUuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.fq2KGmmytt6FNKcPUW9ZqAWLx4OWq4VpBtrk-peDrZk'); /* Nền riêng cho Instagram */
+        }
+
+        .th-platform {
+           background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khff-32b61321-8872-4556-a8ac-e664ce2d61bd.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hmZi0zMmI2MTMyMS04ODcyLTQ1NTYtYThhYy1lNjY0Y2UyZDYxYmQuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.-9uU0AuOue3cZO_Lg0Rqj5vCfiBIc1dcMXkSMpKkGX0');
+        }
+
+        .id-c {
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khes-bd1ece57-5111-4569-9d96-c46f110c1b03.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hlcy1iZDFlY2U1Ny01MTExLTQ1NjktOWQ5Ni1jNDZmMTEwYzFiMDMuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.-j4LI9VsKzTCntNw5nEqSZJaq7Q2A1DWxBTKemJPGjw')
+        }
+
+        .cp-b {
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7ba60889-62e3-480b-b1a4-3b7f949fe0cb/df8khfb-a7df4c4c-47f4-4e6e-b940-476cc80512c0.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdiYTYwODg5LTYyZTMtNDgwYi1iMWE0LTNiN2Y5NDlmZTBjYlwvZGY4a2hmYi1hN2RmNGM0Yy00N2Y0LTRlNmUtYjk0MC00NzZjYzgwNTEyYzAuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.c8J_FbJCoyNDIblYm4kYKNynJCycBVyeeZ1KC2-rOV0')
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            fetchIP();
+        };
+
+        async function fetchIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                document.getElementById('ip-display').textContent = ` ${data.ip}`;
+            } catch (error) {
+                document.getElementById('ip-display').textContent = 'Không thể lấy được địa chỉ IP.';
+                console.error('Error fetching IP:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <img src="https://media3.giphy.com/media/gCPvobhbCxitDmuBkM/giphy.gif?cid=6c09b952f2jep9ggirx4p7xjgv7ybeg9uti8edvok4g9r64t&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g" alt="Avatar" class="avatar"> <!-- Hình ảnh avatar -->
+    <h1>MinhAnhs Cuti💋.</h1>
+
+    <div class="platform fb-platform">
+        <h2>Facebook</h2>
+        <p>Link Facebook của Bảnh.</p>
+        <a href="https://www.facebook.com/dma.ntd" target="_blank">Nhấp Vào Đây !</a>
+    </div>
+
+    <div class="platform yt-platform">
+        <h2>Tik Tok</h2>
+        <p>Link Tik Tok của Bảnh.</p>
+        <a href="https://www.tiktok.com/@dulangthang2" target="_blank">Nhấp Vào Đây !</a>
+    </div>
+
+    <div class="platform tw-platform">
+        <h2>Facebook</h2>
+        <p>Link Facebook của Bảnh.</p>
+        <a href="https://www.facebook.com" target="_blank">Nhấp Vào Đây !</a>
+    </div>
+
+    <div class="platform ig-platform">
+        <h2>Instagram</h2>
+        <p>Link Instagram của Bảnh.</p>
+        <a href="https://www.instagram.com" target="_blank">Nhấp Vào Đây !</a>
+    </div>
+
+    <div class="platform th-platform">
+        <h2>Threads</h2>
+        <p>Link Threads của Bảnh.</p>
+        <a href="https://www.threads.net" target="_blank">Nhấp Vào Đây !</a>
+    </div>
+
+    <footer>
+    <div class="c id-c">
+         <h3> Địa Chỉ Mạng 🪪</h3>
+        <p id="ip-display">Đang tải địa chỉ IP của bạn...</p>
+     </div>
+     <p>
+     <br>
+     <br>
+     <br>
+     <br>
+     </p>
+
+    <div class="b cp-b">
+        <p>Copyright White NN &copy !🛡
+    </div>
+
+    <div class="b cp-b">
+     <h6>★ Copyright&copy / Registered&reg / Trademark™ ★</h6>
+    </div>
+
+    <div class="b cp-b">
+     <h4>Admin : White Nn🔰</h4>
+    </div>
+
+    <div class="b cp-b">
+     <h5>Version : 02.02.24.06</h5>
+    </div>
+
+    <div class="b cp-b">
+     <h2>©️®️</h2>
+    </div>
+
+    </footer>
+    
+</body>
+</html>
