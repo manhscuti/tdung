@@ -17,9 +17,9 @@ def create_repo(token, repo_name):
     }
     response = requests.post(url, headers=get_headers(token), json=data)
     if response.status_code == 201:
-        print(f"Tạo repo '{repo_name}' thành công.")
+        print(f"✅ Tạo repo '{repo_name}' thành công.")
     else:
-        print("Lỗi khi tạo repo:", response.json())
+        print("❌ Lỗi khi tạo repo:", response.json())
         exit()
 
 def upload_file(token, username, repo_name, file_path, dest_path):
@@ -40,11 +40,24 @@ def upload_file(token, username, repo_name, file_path, dest_path):
 def get_raw_url(username, repo_name, file_path):
     return f"https://raw.githubusercontent.com/{username}/{repo_name}/main/{file_path}"
 
+def list_repos(token):
+    url = "https://api.github.com/user/repos"
+    response = requests.get(url, headers=get_headers(token))
+    if response.status_code == 200:
+        repos = response.json()
+        print("\n📄 Danh sách repository hiện có:")
+        for i, repo in enumerate(repos):
+            print(f"{i + 1}. {repo['name']}")
+        return [repo['name'] for repo in repos]
+    else:
+        print("❌ Không thể lấy danh sách repo.")
+        exit()
+
 def main():
     print("=== Tool Upload File lên GitHub và Lấy Link Raw ===")
-    
+
     token = input("🔑 Nhập GitHub Personal Access Token (PAT): ").strip()
-    
+
     # Xác thực và lấy username
     user_resp = requests.get("https://api.github.com/user", headers=get_headers(token))
     if user_resp.status_code != 200:
@@ -53,15 +66,28 @@ def main():
     username = user_resp.json()["login"]
     print(f"✅ Xác thực thành công. Tài khoản: {username}")
 
-    repo_name = input("📦 Nhập tên repo muốn tạo: ").strip()
-    create_repo(token, repo_name)
+    # Hỏi người dùng có muốn sử dụng repo hiện có không
+    use_existing = input("📁 Bạn có muốn sử dụng repo hiện có không? (y/n): ").strip().lower()
+    if use_existing == "y":
+        repos = list_repos(token)
+        if not repos:
+            print("❌ Không có repo nào.")
+            return
+        choice = input("🔢 Nhập số thứ tự của repo muốn sử dụng: ").strip()
+        if not choice.isdigit() or int(choice) < 1 or int(choice) > len(repos):
+            print("❌ Lựa chọn không hợp lệ.")
+            return
+        repo_name = repos[int(choice) - 1]
+        print(f"📦 Sử dụng repo: {repo_name}")
+    else:
+        repo_name = input("📦 Nhập tên repo muốn tạo: ").strip()
+        create_repo(token, repo_name)
+        # Tạo README.md cho repo mới
+        with open("README.md", "w", encoding="utf-8") as f:
+            f.write(f"# {repo_name}\nRepo được tạo tự động.")
+        upload_file(token, username, repo_name, "README.md", "README.md")
 
-    # Tạo README.md
-    with open("README.md", "w", encoding="utf-8") as f:
-        f.write(f"# {repo_name}\nRepo được tạo tự động.")
-
-    upload_file(token, username, repo_name, "README.md", "README.md")
-
+    # Upload hoặc tạo file
     choice = input("📄 Bạn muốn:\n1. Upload file có sẵn\n2. Tạo file mới\nChọn (1/2): ")
     if choice == "1":
         file_path = input("📂 Nhập đường dẫn file muốn upload: ").strip()
