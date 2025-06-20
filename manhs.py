@@ -17,9 +17,9 @@ def create_repo(token, repo_name):
     }
     response = requests.post(url, headers=get_headers(token), json=data)
     if response.status_code == 201:
-        print(f"✅ Tạo repo '{repo_name}' thành công.")
+        print(f"Tạo repo '{repo_name}' thành công.")
     else:
-        print("❌ Lỗi khi tạo repo:", response.json())
+        print("Lỗi khi tạo repo:", response.json())
         exit()
 
 def upload_file(token, username, repo_name, file_path, dest_path):
