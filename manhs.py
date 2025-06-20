@@ -1,96 +1,84 @@
-import os, base64, bz2, zlib, lzma, marshal, hashlib, secrets
-from Crypto.Cipher import AES
-from Crypto.Protocol.KDF import PBKDF2
-from Crypto.Hash import HMAC, SHA512
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
+import requests
+import base64
+import os
 
-def manhs_generate_keys():
-    if not os.path.exists("private.pem") or not os.path.exists("public.pem"):
-        key = RSA.generate(2048)
-        with open("private.pem", "wb") as f:
-            f.write(key.export_key())
-        with open("public.pem", "wb") as f:
-            f.write(key.publickey().export_key())
+def get_headers(token):
+    return {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json"
+    }
 
-def manhs_encrypt_file(input_file, output_file):
-    # Bước 1: Random key, salt, iv
-    key = secrets.token_bytes(32)
-    salt = secrets.token_bytes(16)
-    iv = secrets.token_bytes(12)
+def create_repo(token, repo_name):
+    url = "https://api.github.com/user/repos"
+    data = {
+        "name": repo_name,
+        "description": "Repo được tạo tự động",
+        "private": False
+    }
+    response = requests.post(url, headers=get_headers(token), json=data)
+    if response.status_code == 201:
+        print(f"✅ Tạo repo '{repo_name}' thành công.")
+    else:
+        print("❌ Lỗi khi tạo repo:", response.json())
+        exit()
 
-    # Bước 2: Dẫn xuất khoá bằng PBKDF2 + SHA512
-    derived_key = PBKDF2(key, salt, dkLen=32, count=100000, hmac_hash_module=SHA512)
-    derived_iv = PBKDF2(iv, salt, dkLen=12, count=100000, hmac_hash_module=SHA512)
+def upload_file(token, username, repo_name, file_path, dest_path):
+    url = f"https://api.github.com/repos/{username}/{repo_name}/contents/{dest_path}"
+    with open(file_path, "rb") as f:
+        content = base64.b64encode(f.read()).decode("utf-8")
+    data = {
+        "message": f"Add {dest_path}",
+        "content": content
+    }
+    response = requests.put(url, headers=get_headers(token), json=data)
+    if response.status_code in [201, 200]:
+        print(f"✅ Tải file {dest_path} lên thành công.")
+    else:
+        print("❌ Lỗi khi tải file:", response.json())
+        exit()
 
-    # Bước 3: AES-GCM mã hóa nội dung file
-    with open(input_file, "rb") as f:
-        data = f.read()
-    cipher = AES.new(derived_key, AES.MODE_GCM, nonce=derived_iv)
-    ciphertext, tag = cipher.encrypt_and_digest(data)
+def get_raw_url(username, repo_name, file_path):
+    return f"https://raw.githubusercontent.com/{username}/{repo_name}/main/{file_path}"
 
-    # Bước 4: HMAC để xác thực
-    hmac = HMAC.new(derived_key, ciphertext, SHA512).digest()
+def main():
+    print("=== Tool Upload File lên GitHub và Lấy Link Raw ===")
+    
+    token = input("🔑 Nhập GitHub Personal Access Token (PAT): ").strip()
+    
+    # Xác thực và lấy username
+    user_resp = requests.get("https://api.github.com/user", headers=get_headers(token))
+    if user_resp.status_code != 200:
+        print("❌ Token không hợp lệ.")
+        return
+    username = user_resp.json()["login"]
+    print(f"✅ Xác thực thành công. Tài khoản: {username}")
 
-    # Bước 5: RSA mã hóa khoá
-    with open("public.pem", "rb") as f:
-        pubkey = RSA.import_key(f.read())
-    rsa_cipher = PKCS1_OAEP.new(pubkey)
-    enc_key = rsa_cipher.encrypt(key)
+    repo_name = input("📦 Nhập tên repo muốn tạo: ").strip()
+    create_repo(token, repo_name)
 
-    # Bước 6: XOR kết quả
-    def xor_bytes(data, key):
-        return bytes([b ^ key[i % len(key)] for i, b in enumerate(data)])
+    # Tạo README.md
+    with open("README.md", "w", encoding="utf-8") as f:
+        f.write(f"# {repo_name}\nRepo được tạo tự động.")
 
-    xor_data = xor_bytes(ciphertext + tag + hmac, salt)
+    upload_file(token, username, repo_name, "README.md", "README.md")
 
-    # Bước 7: Ghi file tạm
-    temp_file = "manhs_output"
-    with open(temp_file, "wb") as f:
-        f.write(base64.b64encode(enc_key + salt + iv + xor_data))
+    choice = input("📄 Bạn muốn:\n1. Upload file có sẵn\n2. Tạo file mới\nChọn (1/2): ")
+    if choice == "1":
+        file_path = input("📂 Nhập đường dẫn file muốn upload: ").strip()
+        dest_name = os.path.basename(file_path)
+        upload_file(token, username, repo_name, file_path, dest_name)
+        print("🔗 Link RAW của file:", get_raw_url(username, repo_name, dest_name))
+    elif choice == "2":
+        filename = input("📝 Nhập tên file muốn tạo (VD: code.txt): ").strip()
+        content = input("💬 Nhập nội dung file: ")
+        # Tạo file tạm
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(content)
+        upload_file(token, username, repo_name, filename, filename)
+        print("🔗 Link RAW của file:", get_raw_url(username, repo_name, filename))
+        os.remove(filename)
+    else:
+        print("❌ Lựa chọn không hợp lệ.")
 
-    # Bước 8: Lớp nén và mã hóa tiếp theo
-    with open(temp_file, "rb") as f:
-        raw = f.read()
-
-    compressed = marshal.dumps(lzma.compress(zlib.compress(bz2.compress(base64.b85encode(raw)))))
-    hexed = compressed.hex().encode()
-    final_data = base64.b64encode(xor_bytes(hexed, b"manhs_secret_key"))
-
-    # Bước 9: Ghi file output + mã hoá import + gắn public key
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write("#Copyright by MinhAnhs.\n")
-        f.write("exec(__import__('base64').b64decode(b'''\\\n")
-        f.write(base64.b64encode(f'''
-import base64, marshal, bz2, zlib, lzma
-
-def manhs_decrypt():
-    def xor_bytes(data, key):
-        return bytes([b ^ key[i % len(key)] for i, b in enumerate(data)])
-    enc_data = {repr(final_data)}
-    data = xor_bytes(base64.b64decode(enc_data), b"manhs_secret_key")
-    data = marshal.loads(bytes.fromhex(data.decode()))
-    data = base64.b85decode(bz2.decompress(zlib.decompress(lzma.decompress(data))))
-    # Bạn cần viết thêm mã giải mã sâu hơn nếu cần chạy mã gốc.
-
-manhs_decrypt()
-'''.strip().encode()).decode())
-        f.write("'''))")
-
-    # Xoá các file tạm và khóa
-    os.remove("private.pem")
-    os.remove("public.pem")
-    os.remove(temp_file)
-
-# === Chạy tool chính ===
 if __name__ == "__main__":
-    inp = input("Nhập tên file đầu vào (VD: file.py): ")
-    outp = input("Nhập tên file đầu ra (VD: file_out.py): ")
-
-    if not os.path.exists(inp):
-        print("Không tìm thấy file đầu vào.")
-        exit(1)
-
-    manhs_generate_keys()
-    manhs_encrypt_file(inp, outp)
-    print("Đã mã hóa xong và tạo file:", outp)
+    main()
